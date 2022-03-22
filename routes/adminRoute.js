@@ -6,20 +6,18 @@ const passport = require('passport');
 
 /** All post request *//////////////////////////////////////////////
 
-// // register staff route
-// router.post('/register-staff',  adminController.registerStaff)
+// register staff route
+router.post('/register-staff',  adminController.registerStaff)
 
-// // create client from a file
-// // router.post('/create-client-from-file', adminController.registerClientFromAfile)
 
-// // create faculty
-// router.post('/add-faculty', adminController.addFaculty)
+// create faculty
+router.post('/add-faculty', adminController.addFaculty)
 
 // // create main event
 // router.put('/create-home-event',  adminController.addHomeEvent)
 
 // add image to an event
-router.put('/upload-media',  adminController.uploadMedias)
+router.put('/trigger-notification',  adminController.uploadMedias)
 // router.put('/upload-a-video',  adminController.uploadVideo)
 
 // set profie pic
