@@ -8,7 +8,7 @@ const passport = require('passport')
 const expressSession = require('express-session')
 const MongoStore = require('connect-mongo')
 const cors = require('cors')
-const Staff = require('./models/staff')
+const Company = require('./models/company')
 const LocalStrategy = require('passport-local').Strategy;
 
 const { uuid } = require('uuidv4');
@@ -74,7 +74,7 @@ app.use(passport.session())
 require('./config/passport.config')(passport);
 
 
-passport.use('staff', Staff.createStrategy())
+passport.use('company', Company.createStrategy())
 
 passport.serializeUser(function(user, done) {
   var key = {
@@ -86,16 +86,16 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(key, done) {
   // if(key.type === 'staff'|| key.type === 'admin' ){
-    Staff.findById(key.id, function(err, user) {
+    Company.findById(key.id, function(err, user) {
       done(err, user)
     }) 
   // }
   
 })
-passport.serializeUser(Staff.serializeUser());
-passport.deserializeUser(Staff.deserializeUser());
+passport.serializeUser(Company.serializeUser());
+passport.deserializeUser(Company.deserializeUser());
 
-passport.use(new LocalStrategy(Staff.authenticate()));
+passport.use(new LocalStrategy(Company.authenticate()));
 
 app.use('/admin', adminRouter)
 app.use('/', indexRouter);

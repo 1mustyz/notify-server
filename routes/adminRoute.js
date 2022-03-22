@@ -6,111 +6,112 @@ const passport = require('passport');
 
 /** All post request *//////////////////////////////////////////////
 
-// register staff route
-router.post('/register-staff',  adminController.registerStaff)
+// // register staff route
+// router.post('/register-staff',  adminController.registerStaff)
 
-// create client from a file
-// router.post('/create-client-from-file', adminController.registerClientFromAfile)
+// // create client from a file
+// // router.post('/create-client-from-file', adminController.registerClientFromAfile)
 
-// create faculty
-router.post('/add-faculty', adminController.addFaculty)
+// // create faculty
+// router.post('/add-faculty', adminController.addFaculty)
 
-// create main event
-router.put('/create-home-event',  adminController.addHomeEvent)
+// // create main event
+// router.put('/create-home-event',  adminController.addHomeEvent)
 
 // add image to an event
-router.put('/upload-an-image',  adminController.addAnImageToEvent)
+router.put('/upload-media',  adminController.uploadMedias)
+// router.put('/upload-a-video',  adminController.uploadVideo)
 
 // set profie pic
-router.put('/set-profile-pic',  adminController.setProfilePic)
+// router.put('/set-profile-pic',  adminController.setProfilePic)
 
-// edit home page event
-router.put('/edit-homepage-event', adminController.editEvent)
-
-
-// login staff
-router.post('/login', adminController.loginStaff)
+// // edit home page event
+// router.put('/edit-homepage-event', adminController.editEvent)
 
 
-/** All get request *///////////////////////////////////////////////////////////////
-
-// get all staff
-router.get('/get-all-staff', adminController.findAllStaff)
-router.post('/mail', adminController.mall)
+// // login staff
+// router.post('/login', adminController.loginStaff)
 
 
-// get single staff
-router.get('/get-single-staff', adminController.singleStaff)
+// /** All get request *///////////////////////////////////////////////////////////////
 
-// get home event
-router.get('/get-home-event', adminController.getHomeEvent)
-
-// get all faculties
-router.get('/get-all-faculties', adminController.getAllFaculties)
-
-// get single faculty
-router.get('/get-single-faculty', adminController.singleFaculty)
-
-// get single department
-router.get('/get-single-department', adminController.getSingleDepartment)
-
-// get all department
-router.get('/get-all-department', adminController.getAllDepartment)
+// // get all staff
+// router.get('/get-all-staff', adminController.findAllStaff)
+// router.post('/mail', adminController.mall)
 
 
-// remove event 
-router.put('/remove-event', adminController.removeEvent)
+// // get single staff
+// router.get('/get-single-staff', adminController.singleStaff)
 
-// edit faculty
-router.put('/edit-faculty', adminController.editFaculty)
+// // get home event
+// router.get('/get-home-event', adminController.getHomeEvent)
 
-// edit dean
-router.put('/edit-dean', adminController.editDean)
+// // get all faculties
+// router.get('/get-all-faculties', adminController.getAllFaculties)
 
-// edit department
-router.put('/edit-department', adminController.editDepartment)
+// // get single faculty
+// router.get('/get-single-faculty', adminController.singleFaculty)
 
-// edit hod 
-router.put('/edit-hod', adminController.editHod)
+// // get single department
+// router.get('/get-single-department', adminController.getSingleDepartment)
 
-// edit department program 
-router.put('/edit-department-program', adminController.editDepartmentProgram)
+// // get all department
+// router.get('/get-all-department', adminController.getAllDepartment)
 
-// edit department staff
-router.put('/edit-department-staff', adminController.editDepartmentStaffs)
 
-// add dean
-router.put('/add-dean', adminController.addDean)
+// // remove event 
+// router.put('/remove-event', adminController.removeEvent)
 
-// add department
-router.put('/add-department', adminController.addDepartment)
+// // edit faculty
+// router.put('/edit-faculty', adminController.editFaculty)
 
-// add hod
-router.put('/add-hod', adminController.addHod)
+// // edit dean
+// router.put('/edit-dean', adminController.editDean)
 
-// add department staff
-router.put('/add-department-staff', adminController.addDepartmentStaff)
+// // edit department
+// router.put('/edit-department', adminController.editDepartment)
 
-// add department program
-router.put('/add-department-program', adminController.addDepartmentProgram)
+// // edit hod 
+// router.put('/edit-hod', adminController.editHod)
 
-// remove dean
-router.put('/remove-dean', adminController.removeDean)
+// // edit department program 
+// router.put('/edit-department-program', adminController.editDepartmentProgram)
 
-// remove department program
-router.put('/remove-department-program', adminController.removeDepartmentProgram)
+// // edit department staff
+// router.put('/edit-department-staff', adminController.editDepartmentStaffs)
 
-// remove department staff
-router.put('/remove-department-staff', adminController.removeDepartmentStaff)
+// // add dean
+// router.put('/add-dean', adminController.addDean)
 
-// remove hod
-router.put('/remove-hod', adminController.removeHod)
+// // add department
+// router.put('/add-department', adminController.addDepartment)
 
-// remove department
-router.put('/remove-department', adminController.removeDepartment)
+// // add hod
+// router.put('/add-hod', adminController.addHod)
 
-// remove faculty
-router.delete('/remove-faculty', adminController.removeFaculty)
+// // add department staff
+// router.put('/add-department-staff', adminController.addDepartmentStaff)
+
+// // add department program
+// router.put('/add-department-program', adminController.addDepartmentProgram)
+
+// // remove dean
+// router.put('/remove-dean', adminController.removeDean)
+
+// // remove department program
+// router.put('/remove-department-program', adminController.removeDepartmentProgram)
+
+// // remove department staff
+// router.put('/remove-department-staff', adminController.removeDepartmentStaff)
+
+// // remove hod
+// router.put('/remove-hod', adminController.removeHod)
+
+// // remove department
+// router.put('/remove-department', adminController.removeDepartment)
+
+// // remove faculty
+// router.delete('/remove-faculty', adminController.removeFaculty)
 
 
 module.exports = router;

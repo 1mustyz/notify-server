@@ -2,10 +2,7 @@ const multer  = require('multer');
 const path = require('path')
 
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-      cb(null, 'public/images');
-  },
-
+  
   // By default, multer removes file extensions so let's add them back
   filename: function(req, file, cb) {
       cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -23,9 +20,27 @@ const storageFile = multer.diskStorage({
   }
 });
 
+const storageAllMedia = multer.diskStorage({
+  
+  filename: (req, file, cb) => {
+    const fileExt = file.originalname.split(".").pop();
+    const filename = `${new Date().getTime()}.${fileExt}`;
+    cb(null, filename);
+  },
+});
 
+
+const storageVideo = multer.diskStorage({
+  filename: (req, file, cb) => {
+    const fileExt = file.originalname.split(".").pop();
+    const filename = `${new Date().getTime()}.${fileExt}`;
+    cb(null, filename);
+  },
+});
 
 module.exports = {
   storage,
-  storageFile
+  storageFile,
+  storageAllMedia,
+  storageVideo
 }

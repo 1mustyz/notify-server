@@ -2,21 +2,21 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
-const StaffSchema = new Schema({
+const CompanySchema = new Schema({
     username: { type: String, required: true, unique: [ true, 'ID Number already exist' ] },
-    firstName: { type: String, required: true},
-    lastName: { type: String, required: true},
-    gender: { type: String},
+    companyName: { type: String, required: true},
+    email: { type: String, required: true},
     phone: { type: String, required: true},
     address: { type: String},
+    emergencies: [{type: String, default:Array}],
     image: { type: String, default: 'null' },
 }, { timestamps: true });
 
 //plugin passport-local-mongoose to enable password hashing and salting and other things
-StaffSchema.plugin(passportLocalMongoose);
+CompanySchema.plugin(passportLocalMongoose);
 
 //connect the schema with user table
-const Staff = mongoose.model('staff', StaffSchema);
+const Company = mongoose.model('company', CompanySchema);
 
 //export the model 
-module.exports = Staff;
+module.exports = Company;

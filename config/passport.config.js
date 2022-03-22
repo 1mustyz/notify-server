@@ -2,7 +2,7 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const passport = require('passport');
-const Staff = require('../models/staff')
+const Company = require('../models/company')
 
 
 const jwtOptions = {}
@@ -12,7 +12,7 @@ jwtOptions.secretOrKey = 'myVerySecret'
 module.exports = passport =>{
     passport.use('jwt.admin',new JwtStrategy(
         jwtOptions,(jwt_payload, done)=>{
-            Staff.findOne({username:jwt_payload.id,role:"admin"}).then(user =>{
+            Company.findOne({username:jwt_payload.id,role:"admin"}).then(user =>{
                 console.log(user);
                 console.log(jwt_payload);
                 if(user){
@@ -27,7 +27,7 @@ module.exports = passport =>{
 
     passport.use('jwt.staff',new JwtStrategy(
         jwtOptions,(jwt_payload, done)=>{
-            Staff.findOne({username:jwt_payload.id,role:"staff"}).then(staff =>{
+            Company.findOne({username:jwt_payload.id,role:"staff"}).then(staff =>{
 
                 console.log(staff);
                 console.log(jwt_payload);
