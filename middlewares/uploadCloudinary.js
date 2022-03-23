@@ -28,6 +28,6 @@ exports.delete = async (image) => {
         resource_type: "raw"
     }, 
       function(error,result) {
-        // console.log('33333333',result, error)
+        console.log('33333333',result, error)
     });
 }

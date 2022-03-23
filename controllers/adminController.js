@@ -24,10 +24,11 @@ cloudinary.config({
 
 
 // staff registration controller
-exports.registerStaff = async (req, res, next) => {
+exports.registerCompany = async (req, res, next) => {
     try {
 
       //create the user instance
+      req.body.username = randomstring.generate(10)
       user = new Company(req.body)
       const password = req.body.password ? req.body.password : 'password'
       //save the user to the DB
@@ -121,11 +122,11 @@ exports.forgetPassword = async (req,res,next) => {
 }
 
   // staff login controller
-exports.loginStaff = (req, res, next) => {
+exports.loginCompany = (req, res, next) => {
 
   let payLoad = {}
   // perform authentication
-  passport.authenticate('staff', (error, user, info) => {
+  passport.authenticate('company', (error, user, info) => {
     if (error) return res.json({ success: false, error })
     if (!user)
       return res.json({
@@ -150,14 +151,13 @@ exports.loginStaff = (req, res, next) => {
           phone: user.phone,
           email: user.email,
           image: user.image,
-          emergencies: user.emergencies,
           address: user.address,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
           __v: user.__v
         }
         
-        res.json({ success: true, message: 'staff login successful', newUser})
+        res.json({ success: true, message: 'company login successful', newUser})
       }
     })
   })(req, res, next)
@@ -235,7 +235,7 @@ exports.setProfilePic = async (req,res, next) => {
 
         
         await Company.findOneAndUpdate({username: req.query.username},{$set: {image: result.secure_url}})
-        const editedStaff = await Company.findOne({username: req.query.username})
+        const editedStaff = await Company.findOne({username: req.query.username},{emergencies:0})
         
         res.json({success: true,
           message: editedStaff,
@@ -273,7 +273,7 @@ exports.editCompany = async (req,res,next) => {
 exports.getEmergencies = async (req,res, next) => {
   const {companyId} = req.query
   try {
-    const result = await Company.findOne({companyId:companyId},{emergencies:1,_id:0});
+    const result = await Company.findOne({username:companyId},{emergencies:1});
     res.json({success: true, message: result,})
     
   } catch (error) {
@@ -286,8 +286,9 @@ exports.getEmergencies = async (req,res, next) => {
 exports.getSingleEmergency = async (req,res, next) => {
   const {emergencyId} = req.query
   try {
-    const result = await Company.findOne({"emergencies.emergencyId":emergencyId},{emergencies:1,_id:0});
-    const singleEmergency = result.filter(emgy => emgy.emergencyId == emergencyId)
+    const result = await Company.findOne({"emergencies.emergencyId":emergencyId},{emergencies:1});
+    console.log(result)
+    const singleEmergency = result.emergencies.filter(emgy => emgy.emergencyId == emergencyId)
     res.json({success: true, message: singleEmergency,})
     
   } catch (error) {
@@ -301,21 +302,22 @@ exports.getSingleEmergency = async (req,res, next) => {
 exports.deleteEmergency = async (req,res, next) => {
   const {emergencyId} = req.query
   try {
-    const result = await Company.findOne({"emergencies.emergencyId":emergencyId},{emergencies:1,_id:0});
-    let singleEmergency = result.filter(emgy => emgy.emergencyId == emergencyId)
+    const result = await Company.findOne({"emergencies.emergencyId":emergencyId},{emergencies:1});
+    let singleEmergency = result.emergencies.filter(emgy => emgy.emergencyId == emergencyId)
+    console.log(singleEmergency[0])
     const cDelete = async ()=>{
 
-      if(singleEmergency.image != undefined)  await cloudinaryUplouder.delete(singleEmergency.image)
-      if(singleEmergency.audio != undefined)  await cloudinaryUplouder.delete(singleEmergency.audio)
-      if(singleEmergency.video != undefined)  await cloudinaryUplouder.delete(singleEmergency.video)
+      if(singleEmergency[0].image != undefined)  await cloudinaryUplouder.delete(singleEmergency[0].image)
+      if(singleEmergency[0].audio != undefined)  await cloudinaryUplouder.delete(singleEmergency[0].audio)
+      if(singleEmergency[0].video != undefined)  await cloudinaryUplouder.delete(singleEmergency[0].video)
     }
     const myPromise = new Promise(async (resolve, reject) => {
       resolve(cDelete())
     });
 
-    myPromise.then(()=>{
-      singleEmergency = await Company.findOneAndUpdate({"emergencies.emergencyId":emergencyId},{$pull:{"emergencies.$.emergencyId":emergencyId}},{new:true})
-      res.json({success: true, message: singleEmergency,})
+    myPromise.then( async ()=>{
+      singleEmergency = await Company.findOneAndUpdate({"emergencies.emergencyId":emergencyId},{$pull:{"emergencies":{"emergencyId":emergencyId}}},{new:true})
+      res.json({success: true, message: singleEmergency})
     })
     
   } catch (error) {
@@ -329,10 +331,10 @@ exports.removeCompany = async (req,res,next) => {
   let result
   try {
 
-    const resultImage = await Company.findOne({"companyId":companyId})
-    const deleteAllEmergencies = () => {
-      resultImage.emergencies.map((emg)=>{
-        console.log(emg)
+    const resultImage = await Company.findOne({"username":companyId})
+    const deleteAllEmergencies = async () => {
+      resultImage.emergencies.map(async (emg)=>{
+        // console.log(emg)
   
         if (emg.image != undefined) await cloudinaryUplouder.delete(emg.image)
         if (emg.audio != undefined) await cloudinaryUplouder.delete(emg.audio)
@@ -344,12 +346,12 @@ exports.removeCompany = async (req,res,next) => {
     }
     
     const myPromise = new Promise(async (resolve, reject) => {
-      resolve(deleteAllEmergencies)
+      resolve(deleteAllEmergencies())
     });
 
-    myPromise.then(()=>{
+    myPromise.then(async ()=>{
 
-      await Company.findOneAndDelete({companyId: companyId})
+      await Company.findOneAndDelete({"username": companyId})
       result = await Company.find({},{_id:0,emergencies:0})
       res.json({success: true, message: `Company with the ID ${companyId} has been removed`, result})
     })
@@ -368,42 +370,49 @@ exports.removeCompany = async (req,res,next) => {
 exports.uploadMedias = async (req,res, next) => {
   const {companyId} = req.query
   let media = {}
+  let result
   media.emergencyId = randomstring.generate(8)
-
-  singleAllMediaUpload(req, res, async function(err) {
-    // console.log(req.files,req.media)
-    if (err instanceof multer.MulterError) {
-    return res.json(err.message);
-    }
-    else if (err) {
-      return res.json(err);
-    }else if(req.files.length > 0 || req.body.message){
-      req.files.map(async (file)=>{
-        if(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg') media.image = file.path
-        if(file.mimetype == "audio/mp3" || file.mimetype == "audio/mpeg") media.audio = file.path
-        if(file.mimetype == "video/mp4") media.video = file.path
-      })
-      if (req.body.message) media.message = req.body.message
-
-      const cUpload = async ()=>{
-
-        if(media.image != undefined) media.image = await cloudinaryUplouder.upload(media.image)
-        if(media.audio != undefined) media.audio = await cloudinaryUplouder.upload(media.audio)
-        if(media.video != undefined) media.video = await cloudinaryUplouder.upload(media.video)
+  try {
+    singleAllMediaUpload(req, res, async function(err) {
+      // console.log(req.files,req.media)
+      if (err instanceof multer.MulterError) {
+      return res.json(err.message);
       }
-      const myPromise = new Promise(async (resolve, reject) => {
-        resolve(cUpload())
-      });
-
-      myPromise.then(()=>{
-
-        console.log({success:true,media})
-      })
-
-    }
-
-       
-  });
+      else if (err) {
+        return res.json(err);
+      }else if(req.files.length > 0 || req.body.message){
+        req.files.map(async (file)=>{
+          if(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg') media.image = file.path
+          if(file.mimetype == "audio/mp3" || file.mimetype == "audio/mpeg") media.audio = file.path
+          if(file.mimetype == "video/mp4") media.video = file.path
+        })
+        if (req.body.message) media.message = req.body.message
+  
+        const cUpload = async ()=>{
+  
+          if(media.image != undefined) media.image = await cloudinaryUplouder.upload(media.image)
+          if(media.audio != undefined) media.audio = await cloudinaryUplouder.upload(media.audio)
+          if(media.video != undefined) media.video = await cloudinaryUplouder.upload(media.video)
+        }
+        const myPromise = new Promise(async (resolve, reject) => {
+          resolve(cUpload())
+        });
+  
+        myPromise.then(async ()=>{
+          await Company.findOneAndUpdate({"username":companyId},{$push:{"emergencies":media}},{new:true})
+          result = await Company.findOne({username:companyId},{emergencies:1})
+          res.json({success:true,result})
+        })
+  
+      }
+  
+         
+    });
+  
+    
+  } catch (error) {
+    console.log(error)
+  }
 
         
   

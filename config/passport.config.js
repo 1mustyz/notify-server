@@ -12,7 +12,7 @@ jwtOptions.secretOrKey = 'myVerySecret'
 module.exports = passport =>{
     passport.use('jwt.admin',new JwtStrategy(
         jwtOptions,(jwt_payload, done)=>{
-            Company.findOne({username:jwt_payload.id,role:"admin"}).then(user =>{
+            Company.findOne({username:jwt_payload.id}).then(user =>{
                 console.log(user);
                 console.log(jwt_payload);
                 if(user){
@@ -27,7 +27,7 @@ module.exports = passport =>{
 
     passport.use('jwt.staff',new JwtStrategy(
         jwtOptions,(jwt_payload, done)=>{
-            Company.findOne({username:jwt_payload.id,role:"staff"}).then(staff =>{
+            Company.findOne({username:jwt_payload.id}).then(staff =>{
 
                 console.log(staff);
                 console.log(jwt_payload);
