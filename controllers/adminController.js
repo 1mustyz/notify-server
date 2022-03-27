@@ -372,6 +372,7 @@ exports.uploadMedias = async (req,res, next) => {
   let media = {}
   let result
   media.emergencyId = randomstring.generate(8)
+  media.date = new Date()
   try {
     singleAllMediaUpload(req, res, async function(err) {
       // console.log(req.files,req.media)
@@ -387,7 +388,7 @@ exports.uploadMedias = async (req,res, next) => {
           if(file.mimetype == "video/mp4") media.video = file.path
         })
         if (req.body.message) media.message = req.body.message
-  
+        if (req.body.position) media.position = req.body.position
         const cUpload = async ()=>{
   
           if(media.image != undefined) media.image = await cloudinaryUplouder.upload(media.image)
